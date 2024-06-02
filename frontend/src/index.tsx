@@ -10,7 +10,7 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-      <WebSocketProvider url="ws://localhost:8000">
+      <WebSocketProvider url="wss://tic-tac-toe-multiplayer-9tkt.onrender.com">
       <App />
     </WebSocketProvider>
   </React.StrictMode>
