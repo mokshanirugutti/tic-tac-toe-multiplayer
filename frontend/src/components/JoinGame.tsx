@@ -1,5 +1,6 @@
 import React from 'react';
 import { useWebSocket } from '../WebSocketContext';
+import './JoinGame.css'
 
 const JoinGame: React.FC = () => {
     const ws = useWebSocket();
@@ -13,7 +14,7 @@ const JoinGame: React.FC = () => {
 
     return (
         <div>
-            <button onClick={joinGame}>Join Game</button>
+            <button onClick={joinGame} className="button">Join Game</button>
         </div>
     );
 };

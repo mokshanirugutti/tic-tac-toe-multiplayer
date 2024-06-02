@@ -90,11 +90,11 @@ const App: React.FC = () => {
 
     return (
         <div className="App">
-            <h1>Tic Tac Toe</h1>
+            <h1 className='title-heading'>Tic Tac Toe</h1>
             {!game.player && <JoinGame />}
             {game.player && (
                 <div>
-                    <h2>Player: {game.player}</h2>
+                    <h2 className='player-title'>Player: {game.player}</h2>
                     {game.gameOver && (
                         <div>
                             <h2>Game Over</h2>
