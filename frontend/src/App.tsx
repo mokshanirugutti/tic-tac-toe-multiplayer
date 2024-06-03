@@ -6,6 +6,8 @@ import { Game, MessageType, MoveMessage, StartMessage, EndMessage, ResetMessage 
 import './App.css';
 
 const App: React.FC = () => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    
     const ws = useWebSocket();
     const [game, setGame] = useState<Game>({
         board: ["", "", "", "", "", "", "", "", ""],
@@ -67,6 +69,7 @@ const App: React.FC = () => {
     };
 
     const handleReset = () => {
+        setIsModalOpen(false);
         if (ws) {
             const resetMessage: ResetMessage = { 
                 type: 'reset', 
@@ -87,6 +90,13 @@ const App: React.FC = () => {
             });
         }
     };
+    
+
+    useEffect (() => {
+        if( game.gameOver){
+            setIsModalOpen(true);
+        }
+    },[game.gameOver]);
 
     return (
         <div className="App">
@@ -95,13 +105,7 @@ const App: React.FC = () => {
             {game.player && (
                 <div>
                     <h2 className='player-title'>Player: {game.player}</h2>
-                    {game.gameOver && (
-                        <div>
-                            <h2>Game Over</h2>
-                            {game.winner !== 'draw' ? <p>Winner: {game.winner}</p> : <p>It's a draw!</p>}
-                            <button onClick={handleReset}>Reset</button>
-                        </div>
-                    )}
+                    
                     <div className="board">
                         {game.board.map((cell, index) => (
                             <div
@@ -112,6 +116,16 @@ const App: React.FC = () => {
                                 {cell}
                             </div>
                         ))}
+                    </div>
+                </div>
+            )}
+
+            {isModalOpen && (
+                <div className="modal">
+                    <div className="modal-content">
+                        <h2>Game Over</h2>
+                        {game.winner !== 'draw' ? <p>Winner: {game.winner}</p> : <p>It's a draw!</p>}
+                        <button className="reset-button" onClick={handleReset}>Reset</button>
                     </div>
                 </div>
             )}

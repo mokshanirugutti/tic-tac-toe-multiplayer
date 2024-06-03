@@ -53,12 +53,12 @@ export class Game {
             this.gameOver = true;
             this.sendMessage(this.player1, { type: "end", board: this.board, currentPlayer: this.currentPlayer === this.player1 ? "X" : "O", gameOver: this.gameOver, winner });
             this.sendMessage(this.player2, { type: "end", board: this.board, currentPlayer: this.currentPlayer === this.player1 ? "X" : "O", gameOver: this.gameOver, winner });
-            this.resetGame();
+            
         } else if (this.board.every(cell => cell !== "")) {
             this.gameOver = true;
             this.sendMessage(this.player1, { type: "end", board: this.board, currentPlayer: this.currentPlayer === this.player1 ? "X" : "O", gameOver: this.gameOver, winner: "draw" });
             this.sendMessage(this.player2, { type: "end", board: this.board, currentPlayer: this.currentPlayer === this.player1 ? "X" : "O", gameOver: this.gameOver, winner: "draw" });
-            this.resetGame();
+            
         }
     }
     public getBoard(): string[] {
