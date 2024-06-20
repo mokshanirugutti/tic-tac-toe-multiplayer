@@ -5,12 +5,14 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { WebSocketProvider } from './WebSocketContext';
 
+const websocket_url :string = process.env.WEBSOCKET_URL || 'ws://localhost:8000'
+
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-      <WebSocketProvider url="wss://tic-tac-toe-multiplayer-9tkt.onrender.com">
+      <WebSocketProvider url={websocket_url}>
       <App />
     </WebSocketProvider>
   </React.StrictMode>

@@ -67,4 +67,14 @@ export class gameManager {
             this.removeUser(socket);
         });
     }
+    handleWebRTCSignaling(socket: WebSocket, message: any) {
+        const game = this.games.find(game => game["player1"] === socket || game["player2"] === socket);
+        if (game) {
+            const opponent = game["player1"] === socket ? game["player2"] : game["player1"];
+            opponent.send(JSON.stringify(message));
+            console.log('WebRTC message sent to opponent:', message);
+        } else {
+            console.log('Game not found for WebRTC message.');
+        }
+    }
 }

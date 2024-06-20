@@ -38,5 +38,10 @@ export interface ResetMessage {
     gameOver: boolean;
     winner: string | null;
 }
-
-export type MessageType = MoveMessage | StartMessage | EndMessage | ResetMessage;
+export interface WebRTCMessage {
+    type: "webrtc";
+    sdp?: RTCSessionDescriptionInit;
+    candidate?: RTCIceCandidateInit;
+  }
+  
+export type MessageType = MoveMessage | StartMessage | EndMessage | ResetMessage | WebRTCMessage;
