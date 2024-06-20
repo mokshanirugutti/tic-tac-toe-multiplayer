@@ -29,7 +29,30 @@ const Board: React.FC<BoardProps> = ({ ws, player }) => {
     player,
   });
   const [peerConnection, setPeerConnection] = useState<RTCPeerConnection | null>(null);
-  const [localStream, setLocalStream] = useState<MediaStream | null>(null);
+  
+  const handleWebRTCSignaling = useCallback(async (message: any) => {
+    if (peerConnection) {
+      try {
+        if (message.sdp) {
+          await peerConnection.setRemoteDescription(new RTCSessionDescription(message.sdp));
+          if (message.sdp.type === "offer") {
+            const answer = await peerConnection.createAnswer();
+            await peerConnection.setLocalDescription(answer);
+            if (ws) {
+              ws.send(JSON.stringify({
+                type: "webrtc",
+                sdp: peerConnection.localDescription
+              }));
+            }
+          }
+        } else if (message.candidate) {
+          await peerConnection.addIceCandidate(new RTCIceCandidate(message.candidate));
+        }
+      } catch (error) {
+        console.error("Error handling WebRTC signaling message:", error);
+      }
+    }
+  }, [peerConnection, ws]);
 
   useEffect(() => {
     if (ws) {
@@ -75,7 +98,7 @@ const Board: React.FC<BoardProps> = ({ ws, player }) => {
         }
       };
     }
-  }, [ws, game.player]);
+  }, [ws,handleWebRTCSignaling,game.player]);
 
   const startCall = async () => {
     try {
@@ -187,29 +210,7 @@ const Board: React.FC<BoardProps> = ({ ws, player }) => {
   };
   
 
-  const handleWebRTCSignaling = async (message: any) => {
-    if (peerConnection) {
-      try {
-        if (message.sdp) {
-          await peerConnection.setRemoteDescription(new RTCSessionDescription(message.sdp));
-          if (message.sdp.type === "offer") {
-            const answer = await peerConnection.createAnswer();
-            await peerConnection.setLocalDescription(answer);
-            if (ws) {
-              ws.send(JSON.stringify({
-                type: "webrtc",
-                sdp: peerConnection.localDescription
-              }));
-            }
-          }
-        } else if (message.candidate) {
-          await peerConnection.addIceCandidate(new RTCIceCandidate(message.candidate));
-        }
-      } catch (error) {
-        console.error("Error handling WebRTC signaling message:", error);
-      }
-    }
-  };
+  
 
   const handleCellClick = useCallback(
     (index: number) => {
@@ -259,14 +260,11 @@ const Board: React.FC<BoardProps> = ({ ws, player }) => {
 
   useEffect(() => {
     return () => {
-      if (localStream) {
-        localStream.getTracks().forEach(track => track.stop());
-      }
       if (peerConnection) {
         peerConnection.close();
       }
     };
-  }, [localStream, peerConnection]);
+  }, [ peerConnection]);
 
   const handlecalls = () =>{
     startCall();
